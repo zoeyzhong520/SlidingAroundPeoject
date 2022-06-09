@@ -135,7 +135,10 @@
 
 #pragma mark scrollView代理方法
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSLog(@"%f === contentOffset - scrollViewDidScroll", scrollView.contentOffset.x);
+    
+    NSLog(@"%s", __func__);
+    
+//    NSLog(@"%f === contentOffset - scrollViewDidScroll", scrollView.contentOffset.x);
     
     if (!(scrollView.isTracking || scrollView.isDecelerating) || scrollView != _collectionView) {
         //不是用户滚动的，比如setContentOffset等方法，引起的滚动不需要处理。
@@ -152,14 +155,17 @@
     //当屏幕展示某张卡片时，禁止手指向左滑动并翻阅到下下张卡片
     //如下所示屏幕展示第二张卡片，那么不允许滑动到第四张卡片
     if (scrollView.contentOffset.x < [_cardContentOffsetsArray[2] floatValue] && scrollView.contentOffset.x > [_cardContentOffsetsArray[1] floatValue]) {
-        [scrollView setContentOffset:CGPointMake([_cardContentOffsetsArray[1] floatValue], 0) animated:true];
+        [scrollView setContentOffset:CGPointMake([_cardContentOffsetsArray[1] floatValue], 0) animated:false];
         
 //        [self alertWithTitle:@"禁止翻阅到下一张卡片"];
     }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    NSLog(@"%f === contentOffset - scrollViewDidEndDecelerating", scrollView.contentOffset.x);
+    
+    NSLog(@"%s", __func__);
+    
+//    NSLog(@"%f === contentOffset - scrollViewDidEndDecelerating", scrollView.contentOffset.x);
     
     if (!(scrollView.isTracking || scrollView.isDecelerating) || scrollView != _collectionView) {
         //不是用户滚动的，比如setContentOffset等方法，引起的滚动不需要处理。

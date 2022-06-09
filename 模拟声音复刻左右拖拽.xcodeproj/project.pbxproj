@@ -16,6 +16,7 @@
 		08A93C98284CE1DE00905F2F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A93C97284CE1DE00905F2F /* main.m */; };
 		08A93CA1284CE23000905F2F /* MHBannerCVFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A93C9F284CE23000905F2F /* MHBannerCVFlowLayout.m */; };
 		08A93CA4284CE82F00905F2F /* HMShareCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A93CA3284CE82F00905F2F /* HMShareCollectionViewCell.m */; };
+		08BC065B28524AE600FF2A52 /* SoundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08BC065A28524AE600FF2A52 /* SoundViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,8 @@
 		08A93CA0284CE23000905F2F /* MHBannerCVFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHBannerCVFlowLayout.h; sourceTree = "<group>"; };
 		08A93CA2284CE82F00905F2F /* HMShareCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMShareCollectionViewCell.h; sourceTree = "<group>"; };
 		08A93CA3284CE82F00905F2F /* HMShareCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMShareCollectionViewCell.m; sourceTree = "<group>"; };
+		08BC065928524AE600FF2A52 /* SoundViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SoundViewController.h; sourceTree = "<group>"; };
+		08BC065A28524AE600FF2A52 /* SoundViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoundViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +82,8 @@
 				08A93C93284CE1DE00905F2F /* LaunchScreen.storyboard */,
 				08A93C96284CE1DE00905F2F /* Info.plist */,
 				08A93C97284CE1DE00905F2F /* main.m */,
+				08BC065928524AE600FF2A52 /* SoundViewController.h */,
+				08BC065A28524AE600FF2A52 /* SoundViewController.m */,
 			);
 			path = "模拟声音复刻左右拖拽";
 			sourceTree = "<group>";
@@ -166,6 +171,7 @@
 			files = (
 				08A93C8D284CE1DD00905F2F /* ViewController.m in Sources */,
 				08A93CA4284CE82F00905F2F /* HMShareCollectionViewCell.m in Sources */,
+				08BC065B28524AE600FF2A52 /* SoundViewController.m in Sources */,
 				08A93C87284CE1DD00905F2F /* AppDelegate.m in Sources */,
 				08A93C98284CE1DE00905F2F /* main.m in Sources */,
 				08A93CA1284CE23000905F2F /* MHBannerCVFlowLayout.m in Sources */,
