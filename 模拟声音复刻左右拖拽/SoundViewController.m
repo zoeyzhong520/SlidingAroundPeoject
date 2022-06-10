@@ -672,19 +672,19 @@
     
     //限制手指向右滑动
     _needAotoRead = YES;
-    float contentOffsetX= (lastRecordPageIndex -1)*(SCREEN_WIDTH -80);
-    if (scrollView.contentOffset.x < contentOffsetX) {
-        [scrollView setContentOffset:CGPointMake(contentOffsetX, 0) animated:NO];
-        _needAotoRead = NO;
-        
-        //修复可以缓缓拖拽的问题
-        [scrollView setScrollEnabled:NO];
-        [scrollView setScrollEnabled:YES];
-    }
-    
-    //限制手指向左滑动
     if (scrollView.isTracking || scrollView.isDecelerating || scrollView != _shareCollectionView) {
         
+        float contentOffsetX= (lastRecordPageIndex -1)*(SCREEN_WIDTH -80);
+        if (scrollView.contentOffset.x < contentOffsetX) {
+            [scrollView setContentOffset:CGPointMake(contentOffsetX, 0) animated:NO];
+            _needAotoRead = NO;
+            
+            //修复可以缓缓拖拽的问题
+            [scrollView setScrollEnabled:NO];
+            [scrollView setScrollEnabled:YES];
+        }
+        
+        //限制手指向左滑动
         contentOffsetX = lastRecordPageIndex*(SCREEN_WIDTH -80);
         
         if (scrollView.contentOffset.x > contentOffsetX) {
@@ -745,8 +745,8 @@
     CGFloat itemWidth = (SCREEN_WIDTH - 100) ;
     CGFloat space = itemWidth + 20;
     CGFloat defaultOffsetX  = space* currentPageIndex;
-//    NSLog(@"currentOffsetX = %f,",currentOffsetX);
-//    NSLog(@"defaultOffsetX = %f,",defaultOffsetX);
+    //    NSLog(@"currentOffsetX = %f,",currentOffsetX);
+    //    NSLog(@"defaultOffsetX = %f,",defaultOffsetX);
     
     if (currentOffsetX != defaultOffsetX) {
         // 没有滑动制定位置
@@ -820,7 +820,7 @@
         // 出现翻过了
         CGFloat contentOffsetStartX  = space* lastRecordPageIndex + SCREEN_WIDTH/2 ;
         if (_shareCollectionView.contentOffset.x > contentOffsetStartX) {
-//            NSLog(@"出现翻过了");
+            //            NSLog(@"出现翻过了");
         }
         
     }
@@ -1375,7 +1375,7 @@
                     self->lastRecordPageIndex = 9;
                 }
                 currentPageIndex = (int)self.recordVoiceArray.count;
-                [self scrollToPage:(int)(self.recordVoiceArray.count)];
+                [self scrollToPage:currentPageIndex];
                 [self setProgress:lastRecordPageIndex];
                 
             }
@@ -1620,7 +1620,7 @@
             }
         }
     }
-//    NSLog(@"self.dataArray = %@",self.dataArray);
+    //    NSLog(@"self.dataArray = %@",self.dataArray);
 }
 
 -(void)showDetectionEnvironmentAlertView{
