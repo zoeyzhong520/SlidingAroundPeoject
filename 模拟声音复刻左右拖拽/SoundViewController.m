@@ -53,8 +53,6 @@
 @property (nonatomic,assign) BOOL isRecording;// 正在录音领读
 @property (nonatomic,assign) BOOL isReRecordPage;//这是重录页面
 
-
-
 @property (nonatomic,strong) UIButton* changeTextBtn;//换一句按钮
 
 
@@ -641,8 +639,14 @@
     
     return  size;
 }
+
 #pragma mark - UIScrollViewDelegate
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    NSLog(@"%s", __func__);
+    
+    //开始拖拽后不允许响应操作
+    [_recordView setUserInteractionEnabled:NO];
+    
     if (_isRecording) {
         scrollView.scrollEnabled = NO;
         scrollView.scrollEnabled = YES;
@@ -650,17 +654,13 @@
         
         return;
     }
-    //    [NSObject cancelPreviousPerformRequestsWithTarget:self];
-//    _recordView.userInteractionEnabled = NO;
-//    NSLog(@"scrollViewWillBeginDragging = %f",scrollView.contentOffset.x);
+    
     startContentOffsetX =scrollView.contentOffset.x;
     [self stopPlayOnlineVoice];
     
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    scrollView.panGestureRecognizer.maximumNumberOfTouches =1;
-    
     if (_isRecording) {
         _shareCollectionView.scrollEnabled = NO;
         _shareCollectionView.scrollEnabled = YES;
@@ -670,8 +670,6 @@
     //禁止左滑
     endContentOffsetX = scrollView.contentOffset.x;
     
-    self.backClearView.hidden = YES;
-    
     //限制手指向右滑动
     _needAotoRead = YES;
     float contentOffsetX= (lastRecordPageIndex -1)*(SCREEN_WIDTH -80);
@@ -679,22 +677,27 @@
         [scrollView setContentOffset:CGPointMake(contentOffsetX, 0) animated:NO];
         _needAotoRead = NO;
         
+        //修复可以缓缓拖拽的问题
         [scrollView setScrollEnabled:NO];
         [scrollView setScrollEnabled:YES];
     }
     
     //限制手指向左滑动
-    contentOffsetX = lastRecordPageIndex*(SCREEN_WIDTH -80);
-    if (scrollView.contentOffset.x > contentOffsetX  && scrollView.contentOffset.x < (SCREEN_WIDTH/4.0 + contentOffsetX)) {
+    if (scrollView.isTracking || scrollView.isDecelerating || scrollView != _shareCollectionView) {
         
-        [scrollView setContentOffset:CGPointMake(contentOffsetX, 0) animated:NO];
+        contentOffsetX = lastRecordPageIndex*(SCREEN_WIDTH -80);
         
-        [MeUtils showToastByView:[MeUtils getMainWindow] withText:@"录制完成才能切换至下一张" duration:1 position:CSToastPositionCenter];
+        if (scrollView.contentOffset.x > contentOffsetX) {
+            [scrollView setContentOffset:CGPointMake(contentOffsetX, 0) animated:YES];
+            _needAotoRead = NO;
+            
+            [MeUtils showToastByView:[MeUtils getMainWindow] withText:@"录制完成才能切换至下一张" duration:1 position:CSToastPositionCenter];
+            
+            shareflowLayout.pageScrollEnable = NO;//修复增加回弹动画后导致的需要滑动两次的Bug
+        } else {
+            shareflowLayout.pageScrollEnable = YES;//还原pageScrollEnable设置<默认YES>
+        }
         
-        _needAotoRead = NO;
-        
-        [scrollView setScrollEnabled:NO];
-        [scrollView setScrollEnabled:YES];
     }
     
     [self getCurrentPage:scrollView.contentOffset.x];
@@ -702,80 +705,29 @@
 
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
-    
-    //    endContentOffsetX= scrollView.contentOffset.x ;
-    //    if (endContentOffsetX - startContentOffsetX > 0 && lastRecordPageIndex < currentPageIndex) {
-    //
-    //           if ((scrollView.isTracking||scrollView.dragging)) {
-    //               shareflowLayout.pageScrollEnable = NO;
-    //           }
-    //    }
-//    NSLog(@"scrollViewWillEndDragging = %F",scrollView.contentOffset.x);
-    
-    [self getCurrentPage:_shareCollectionView.contentOffset.x];
-    
 }
+
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    NSLog(@"%s", __func__);
     
-//    NSLog(@"scrollViewDidEndDragging = %F",scrollView.contentOffset.x);
-    //    [self getCurrentPage:scrollView.contentOffset.x];
-    //    self.shareCollectionView.userInteractionEnabled = YES;
+    //拖拽结束后允许响应操作
+    [_recordView setUserInteractionEnabled:YES];
+    
     [self getCurrentPage:_shareCollectionView.contentOffset.x];
-    //    float conOffet = endContentOffsetX - startContentOffsetX;
-    
-    //    if (scrollView.isDragging == NO && scrollView.isTracking ==NO) {
-    //        [self fixScrollViewCurrentOffsetForPage];
-    //        NSLog(@"conOffet >= space = %f",conOffet );
-    //        if (conOffet >= (SCREEN_WIDTH -100)) {
-    //            // 需要翻页但是 没有翻页
-    //            NSLog(@"需要翻页但是 没有翻页");
-    //            [self scrollToPage:currentPageIndex];
-    //
-    //        }
-    //    }
-    
-    
 }
-
-
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    _shareCollectionView.userInteractionEnabled = YES;
-//    _recordView.userInteractionEnabled = YES;
-//    NSLog(@"scrollViewDidEndDecelerating = %f  curentpage = %d",scrollView.contentOffset.x,currentPageIndex);
+    NSLog(@"%s", __func__);
+    
     [self getCurrentPage:_shareCollectionView.contentOffset.x];
     
-    
     float conOffet = endContentOffsetX - startContentOffsetX;
-    
-    
-    //    if (scrollView.decelerating == NO && scrollView.isDragging == NO && scrollView.isTracking ==NO) {
-    //        NSLog(@"scrollView.decelerating == NO");
-    //        [self fixScrollViewCurrentOffsetForPage];
-    //        NSLog(@"conOffet >= space = %f",conOffet );
-    //        if (conOffet >= (SCREEN_WIDTH -100)) {
-    //            // 需要翻页但是 没有翻页
-    //            NSLog(@"需要翻页但是 没有翻页");
-    //            [self scrollToPage:currentPageIndex];
-    //
-    //        }
-    //    }
-    
-    if (scrollView.decelerating == YES) {
-//        NSLog(@"scrollView.decelerating == YES");
-    }
     
     /*
      判断翻页 才领读，
      */
-    
-    
-    
-    
     if (conOffet >= 100 && _needAotoRead ==YES)
     {
-//        NSLog(@"currentPageIndex  = %d",currentPageIndex);
-        
         if (scrollView.dragging || scrollView.tracking) {
             NSLog(@"需要领读");
         }else{
@@ -784,14 +736,8 @@
             
         }
     }
-    else
-    {
-        
-    }
-    
-    
-    
 }
+
 -(void)fixScrollViewCurrentOffsetForPage{
     
     float currentOffsetX = _shareCollectionView.contentOffset.x;
@@ -840,8 +786,6 @@
     
     [self.shareCollectionView reloadData];
     currentPageIndex = page;
-//    NSIndexPath*  currentDex = [NSIndexPath indexPathForRow:currentPageIndex inSection:0];
-//    [_shareCollectionView scrollToItemAtIndexPath:currentDex atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
     
     [_shareCollectionView setContentOffset:CGPointMake(contentOffsetX, 0) animated:YES];
     
@@ -853,8 +797,6 @@
 
 
 -(void)getCurrentPage:(CGFloat)contentOffsetX{
-//    NSLog(@"getCurrentPage = %f",contentOffsetX);
-    
     CGFloat itemWidth = (SCREEN_WIDTH - 100) ;
     CGFloat space = itemWidth + 20;
     int currentPage = (contentOffsetX + SCREEN_WIDTH/2)/space;
@@ -870,33 +812,20 @@
     [_shareCollectionView reloadData];
     
     if (lastRecordPageIndex>currentPageIndex) {
-//        NSLog(@"lastRecordPageIndex>currentPageIndex");
-        
         self.changeTextBtn.hidden =YES;
         _recordView.recordAgainBtn.enabled = YES;
         [_recordView.recordBtn setTitle:@"重新录音" forState:UIControlStateNormal];
         [self getCurrentVoiceUrl];
-        shareflowLayout.pageScrollEnable = YES;
-        
     }else if(currentPageIndex > lastRecordPageIndex){
         // 出现翻过了
-//        NSLog(@"currentPageIndex > lastRecordPageIndex");
-        
-        shareflowLayout.pageScrollEnable = NO;
-        
         CGFloat contentOffsetStartX  = space* lastRecordPageIndex + SCREEN_WIDTH/2 ;
         if (_shareCollectionView.contentOffset.x > contentOffsetStartX) {
-            NSLog(@"出现翻过了");
-            [self scrollToPage:lastRecordPageIndex];
-            
+//            NSLog(@"出现翻过了");
         }
         
     }
     
     else{
-        
-        shareflowLayout.pageScrollEnable = YES;
-        
         self.changeTextBtn.hidden =NO;
         _recordView.recordAgainBtn.enabled = NO;
         if (_isRecording) {
@@ -907,11 +836,8 @@
         [self getCurrentVoiceUrl];
         
     }
-//    NSLog(@"lastRecordPageIndex  = %d ---- currentPageIndex= %d",lastRecordPageIndex,currentPageIndex);
-    
-    
-    
 }
+
 -(void)getCurrentVoiceUrl{
     TextSegObject* object = [_dataArray objectAtIndex:currentPageIndex];
     // 判断试听按钮状态
@@ -1050,7 +976,7 @@
         [_weakSelf stopPlayOnlineVoice];
         
         float delayTime = 0.0;
-        if(self.shareCollectionView.decelerating == YES){
+        if(_weakSelf.shareCollectionView.decelerating == YES){
             delayTime = 0.5;
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1748,4 +1674,6 @@
 
 
 @end
+
+
 
