@@ -34,7 +34,7 @@
             shareManager = [[VoiceManager alloc] init];
             
             shareManager.microphone = [EZMicrophone microphoneWithDelegate:shareManager];
-            [shareManager.microphone startFetchingAudio];
+            [shareManager.microphone setDevice:[[EZAudioDevice inputDevices] firstObject]];
         });
     }
     
@@ -166,6 +166,8 @@ withNumberOfChannels:(UInt32)numberOfChannels
     // happen on a separate audio thread. We wrap any UI updating in a GCD block
     // on the main thread to avoid blocking that audio flow.
     //
+    
+    NSLog(@"%s",__func__);
     
     __weak typeof (self) weakSelf = self;
     
@@ -329,3 +331,4 @@ withNumberOfChannels:(UInt32)numberOfChannels
     NSLog(@"%s",__func__);
 }
 @end
+
